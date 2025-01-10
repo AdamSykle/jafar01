@@ -1,28 +1,36 @@
 pipeline {
     agent {
-        docker { image 'maven:3.8.1-jdk-11' } // Пример для Java-проекта
+        docker { image 'python:3.12.2' } // Указывает на использование Docker-образа Python
     }
+
     stages {
-        stage('Clone Repository') {
+        stage('Clone') {
             steps {
-                git branch: 'main', credentialsId: 'github-token', url: 'https://github.com/AdamSykle/jafar01.git'
+                git 'https://github.com/AdamSykle/jafar01.git' // Замени на ссылку на свой репозиторий Git
             }
         }
-        stage('Build') {
+
+        stage('Install dependencies') {
             steps {
-                sh 'mvn clean install' // Команда для сборки проекта
+                sh 'pip install -r requirements.txt' // Установка зависимостей
             }
         }
-        stage('Test') {
+
+        stage('Run tests') {
             steps {
-                sh 'mvn test' // Команда для тестов
+                sh 'pytest' // Запуск тестов Python
             }
         }
-        stage('Docker Build & Push') {
+
+        stage('Build Docker image') {
             steps {
-                script {
-                    docker.build('your-image-name').push('your-repo/your-image-name')
-                }
+                sh 'docker build -t my-python-app .' // Сборка Docker-образа
+            }
+        }
+
+        stage('Run Docker container') {
+            steps {
+                sh 'docker run -d -p 5000:5000 my-python-app' // Запуск контейнера
             }
         }
     }
