@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', credentialsId: 'github-token', url: 'https://github.com/USERNAME/REPO.git'
+                git branch: 'main', credentialsId: 'github-token', url: 'https://github.com/AdamSykle/jafar01.git'
             }
         }
         stage('Build') {
